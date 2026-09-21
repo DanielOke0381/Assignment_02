@@ -7,7 +7,7 @@
 using namespace std;
 
 
-#define PRE_RELEASE
+//#define PRE_RELEASE
 
 // Define the STUDENT_DATA struct to store student names and email addresses
 struct STUDENT_DATA {
@@ -62,6 +62,7 @@ int main() {
     cout << "Successfully parsed " << studentList.size() << " student records." << endl;
 
     // Read email data ONLY when compiled under PRE_RELEASE
+
 #ifdef PRE_RELEASE
     string emailFilename = "StudentData_Emails.txt";
     ifstream emailFile(emailFilename);
@@ -77,7 +78,6 @@ int main() {
     size_t index = 0;
     string emailLine;
 
-    // Parse the 3rd field (Email) from: LastName, FirstName, Email
     while (getline(emailFile, emailLine) && index < studentList.size()) {
         if (emailLine.empty()) continue;
 
@@ -88,7 +88,6 @@ int main() {
         getline(ss, tempFirstName, ',');
         getline(ss, parsedEmail, ',');
 
-        // If parsed successfully, assign only the email; otherwise fall back to raw line
         if (!parsedEmail.empty()) {
             studentList[index].email = parsedEmail;
         }
