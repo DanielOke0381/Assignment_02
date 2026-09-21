@@ -33,7 +33,7 @@ int main() {
 
     string line;
     // Read the file line by line and parse comma-separated fields
-    while (std::getline(inputFile, line)) {
+    while (getline(inputFile, line)) {
         if (line.empty()) continue;
 
         stringstream ss(line);
@@ -49,6 +49,19 @@ int main() {
     inputFile.close();
 
     cout << "Successfully parsed " << studentList.size() << " student records." << endl;
+
+    // Print loaded student data ONLY when compiled under Debug mode
+#ifdef _DEBUG
+    cout << "\n==================================================" << endl;
+    cout << "          [DEBUG MODE] Loaded Student Data        " << endl;
+    cout << "==================================================" << endl;
+
+    for (const auto& student : studentList) {
+        cout << "Name: " << student.firstName << " " << student.lastName << endl;
+    }
+
+    cout << "==================================================\n" << endl;
+#endif
 
     return 0;
 }
