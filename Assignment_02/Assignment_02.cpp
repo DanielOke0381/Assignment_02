@@ -6,8 +6,7 @@
 
 using namespace std;
 
-
-//#define PRE_RELEASE
+#define PRE_RELEASE
 
 // Define the STUDENT_DATA struct to store student names and email addresses
 struct STUDENT_DATA {
