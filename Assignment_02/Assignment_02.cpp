@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// Enable this directive for Pre-Release builds (reads StudentData_Emails.txt)
 #define PRE_RELEASE
 
 // Define the STUDENT_DATA struct to store student names and email addresses
@@ -16,7 +17,7 @@ struct STUDENT_DATA {
 };
 
 int main() {
-    // Print build version status (Standard vs. Pre-Release)
+    // Print build version status
 #ifdef PRE_RELEASE
     cout << "Application is running PRE-RELEASE source code." << endl;
 #else
@@ -60,27 +61,17 @@ int main() {
 
     cout << "Successfully parsed " << studentList.size() << " student records." << endl;
 
-    // Print loaded student data ONLY when compiled under Debug mode
-#ifdef _DEBUG
-    cout << "\n==================================================" << endl;
-    cout << "          [DEBUG MODE] Loaded Student Data        " << endl;
-    cout << "==================================================" << endl;
-
-    for (const auto& student : studentList) {
-        cout << "Name: " << student.firstName << " " << student.lastName << endl;
-    }
-
-    cout << "==================================================\n" << endl;
-#endif
-
-    // Read email data and merge ONLY in Release mode (#ifndef _DEBUG)
-#ifndef _DEBUG
+    // Read email data ONLY when compiled under PRE_RELEASE
+#ifdef PRE_RELEASE
     string emailFilename = "StudentData_Emails.txt";
     ifstream emailFile(emailFilename);
 
     if (!emailFile.is_open()) {
         cerr << "Error: Unable to open email file -> " << emailFilename << endl;
         return 1;
+    }
+    else {
+        cout << "Successfully opened email file: " << emailFilename << endl;
     }
 
     size_t index = 0;
@@ -95,14 +86,41 @@ int main() {
     }
 
     emailFile.close();
+#endif
 
+    // Print loaded student data ONLY when compiled under Debug mode
+#ifdef _DEBUG
+    cout << "\n==================================================" << endl;
+    cout << "          [DEBUG MODE] Loaded Student Data        " << endl;
+    cout << "==================================================" << endl;
+
+    for (const auto& student : studentList) {
+        cout << "Name: " << student.firstName << " " << student.lastName;
+#ifdef PRE_RELEASE
+        if (!student.email.empty()) {
+            cout << " | Email: " << student.email;
+        }
+#endif
+        cout << endl;
+    }
+
+    cout << "==================================================\n" << endl;
+#endif
+
+    // Output for Non-Debug (Release) mode
+#ifndef _DEBUG
     cout << "\n==================================================" << endl;
     cout << "        [RELEASE MODE] Full Student Roster        " << endl;
     cout << "==================================================" << endl;
 
     for (const auto& student : studentList) {
-        cout << "Name: " << student.firstName << " " << student.lastName
-            << " | Email: " << student.email << endl;
+        cout << "Name: " << student.firstName << " " << student.lastName;
+#ifdef PRE_RELEASE
+        if (!student.email.empty()) {
+            cout << " | Email: " << student.email;
+        }
+#endif
+        cout << endl;
     }
 
     cout << "==================================================\n" << endl;
