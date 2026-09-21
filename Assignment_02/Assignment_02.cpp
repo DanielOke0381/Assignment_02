@@ -6,13 +6,23 @@
 
 using namespace std;
 
-// Define the STUDENT_DATA struct to store student names
+#define PRE_RELEASE
+
+// Define the STUDENT_DATA struct to store student names and email addresses
 struct STUDENT_DATA {
     string firstName;
     string lastName;
+    string email;
 };
 
 int main() {
+    // Print build version status (Standard vs. Pre-Release)
+#ifdef PRE_RELEASE
+    cout << "Application is running PRE-RELEASE source code." << endl;
+#else
+    cout << "Application is running STANDARD source code." << endl;
+#endif
+
     // Container to store parsed student objects
     vector<STUDENT_DATA> studentList;
 
@@ -58,6 +68,41 @@ int main() {
 
     for (const auto& student : studentList) {
         cout << "Name: " << student.firstName << " " << student.lastName << endl;
+    }
+
+    cout << "==================================================\n" << endl;
+#endif
+
+    // Read email data and merge ONLY in Release mode (#ifndef _DEBUG)
+#ifndef _DEBUG
+    string emailFilename = "StudentData_Emails.txt";
+    ifstream emailFile(emailFilename);
+
+    if (!emailFile.is_open()) {
+        cerr << "Error: Unable to open email file -> " << emailFilename << endl;
+        return 1;
+    }
+
+    size_t index = 0;
+    string emailLine;
+
+    // Read emails and assign to corresponding student records
+    while (getline(emailFile, emailLine) && index < studentList.size()) {
+        if (!emailLine.empty()) {
+            studentList[index].email = emailLine;
+            index++;
+        }
+    }
+
+    emailFile.close();
+
+    cout << "\n==================================================" << endl;
+    cout << "        [RELEASE MODE] Full Student Roster        " << endl;
+    cout << "==================================================" << endl;
+
+    for (const auto& student : studentList) {
+        cout << "Name: " << student.firstName << " " << student.lastName
+            << " | Email: " << student.email << endl;
     }
 
     cout << "==================================================\n" << endl;
