@@ -6,7 +6,7 @@
 
 using namespace std;
 
-// Enable this directive for Pre-Release builds (reads StudentData_Emails.txt)
+
 #define PRE_RELEASE
 
 // Define the STUDENT_DATA struct to store student names and email addresses
@@ -77,12 +77,26 @@ int main() {
     size_t index = 0;
     string emailLine;
 
-    // Read emails and assign to corresponding student records
+    // Parse the 3rd field (Email) from: LastName, FirstName, Email
     while (getline(emailFile, emailLine) && index < studentList.size()) {
-        if (!emailLine.empty()) {
-            studentList[index].email = emailLine;
-            index++;
+        if (emailLine.empty()) continue;
+
+        stringstream ss(emailLine);
+        string tempLastName, tempFirstName, parsedEmail;
+
+        getline(ss, tempLastName, ',');
+        getline(ss, tempFirstName, ',');
+        getline(ss, parsedEmail, ',');
+
+        // If parsed successfully, assign only the email; otherwise fall back to raw line
+        if (!parsedEmail.empty()) {
+            studentList[index].email = parsedEmail;
         }
+        else {
+            studentList[index].email = emailLine;
+        }
+
+        index++;
     }
 
     emailFile.close();
